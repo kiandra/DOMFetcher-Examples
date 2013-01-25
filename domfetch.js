@@ -16,7 +16,7 @@ var DOMFetch = (function () {
 
 	*/
 
-    var DOMFetchURL = "http://domfetcher.cloudapp.net";
+    var DOMFetchURL = "http://domfetcher.cloudapp.net/get";
     var slug = null;
     var hasCORS = (function () {
         if ("withCredentials" in new XMLHttpRequest()) {
