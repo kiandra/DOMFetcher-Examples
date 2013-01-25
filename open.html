@@ -1,0 +1,65 @@
+<html>
+    <head>
+        <link href="animate.min.css" rel="stylesheet" type="text/css" />
+        <link href="curl.css" rel="stylesheet" type="text/css" />
+        <link href="demo.css" rel="stylesheet" type="text/css" />
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+        <script type="text/javascript" src="jquery.js"></script>
+        <script type="text/javascript" src="domfetch.js"></script>
+        <script type="text/javascript">    
+            var domfetch = DOMFetch; //temporary hack
+        </script>
+    </head>
+    <body>
+        
+        <div class="loading animated fadeInLeft">Loading...</div>
+        <ul id="open" class="tiles">
+            
+        </ul>
+        
+        <script type="text/javascript">
+            
+            $('#open').empty();
+
+            DOMFetch.get({
+                url: 'http://en.wikipedia.org/wiki/List_of_Australian_Open_champions',
+                selector: '.wikitable:first tr',
+                type: 'outerhtml',
+                runon: 'immediate',
+                timeout: 0,
+                callback: function (result) {
+
+                    $('.loading').addClass('fadeOutRight');
+                    
+                    var time = 0;
+
+                    $.each(result, function (i, e) {
+
+                        var $entry = $(e);
+
+                        if ($('td', $entry).length > 0) {
+                            var $li = $('<li />').addClass('fadeInLeft animated');
+
+                            var year = $('td:nth-child(1) a', $entry).text();
+                            if (year && !isNaN(year)) {
+
+                                $li.append($('<span />').addClass('max').text(year));
+                                $li.append($('<span />').addClass('main').text($('td:nth-child(2)', $entry).text()));
+                                $li.append($('<span />').addClass('summary').append($('<img />').attr('src', 'http:' + $('td:nth-child(2) img', $entry).attr('src'))));
+
+                                time += 100;
+                                setTimeout(function () {
+                                    $('#open').append($li);
+                                }, time);
+                            }
+                        }
+                    });
+                },
+                error: function (errorMessage) {
+                    $('.loading').text('Error!');
+                }
+            });
+            
+        </script>
+    </body>
+</html>

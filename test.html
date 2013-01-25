@@ -1,0 +1,51 @@
+<html>
+    <head>
+        <link href="animate.min.css" rel="stylesheet" type="text/css" />
+        <link href="curl.css" rel="stylesheet" type="text/css" />
+        <link href="demo.css" rel="stylesheet" type="text/css" />
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+        
+        <script type="text/javascript" src="jquery.js"></script>
+        <script type="text/javascript" src="domfetch.js"></script>
+        <script type="text/javascript">
+            var domfetch = DOMFetch; //temporary hack
+        </script>
+    </head>
+    <body>
+        <div class="loading animated fadeInLeft">Loading...</div>
+        <ul id="weather" class="tiles"></ul>
+        
+        <script type="text/javascript">
+            
+            DOMFetch.get({
+                url: 'http://www.bom.gov.au',
+                selector: '#forecasts table tr',
+                type: 'outerhtml',
+                runon: 'immediate',
+                callback: function (result) {
+
+                    $('.loading').addClass('fadeOutRight');
+                    
+                    $.each(result, function (i, e) {
+                        var $entry = $(e);
+
+                        var $li = $('<li />').addClass('fadeInLeft animated');
+
+                        $li.append($('<span />').addClass('max').text($('td:nth-child(2)', $entry).text()));
+                        $li.append($('<span />').addClass('main').text($('td:nth-child(1)', $entry).text()));
+                        $li.append($('<span />').addClass('summary').text($('td:nth-child(3)', $entry).text().replace('.', '')));
+                        setTimeout(function () {
+                            $('#weather').append($li);
+                        }, 50);
+
+                    });
+                },
+                error: function (errorMessage) {
+                    $('.loading').text('Error!');
+                }
+            });
+            
+        </script>
+        
+    </body>
+</html>
